@@ -11,12 +11,12 @@ function formatCep(value: string) {
 
 function friendlyError(error: unknown) {
   if (error instanceof Error && error.message === 'CEP_NOT_FOUND') {
-    return 'Não encontramos esse CEP. Confira os números e tente novamente.';
+    return 'CEP não localizado. Verifique os dados informados e tente novamente.';
   }
   if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
-    return 'A consulta demorou mais que o esperado. Tente novamente.';
+    return 'O tempo limite da consulta foi excedido. Tente novamente.';
   }
-  return 'Não foi possível consultar o CEP agora. Verifique sua conexão.';
+  return 'Não foi possível realizar a consulta. Verifique sua conexão e tente novamente.';
 }
 
 export function CepSearch() {
@@ -45,7 +45,7 @@ export function CepSearch() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (cep.replace(/\D/g, '').length !== 8) {
-      setError('Digite um CEP com 8 números.');
+      setError('Informe um CEP válido com 8 dígitos.');
       setAddress(null);
       return;
     }
@@ -76,10 +76,10 @@ export function CepSearch() {
       <div className="section-heading">
         <div>
           <span className="eyebrow">
-            <PinIcon /> Localização inteligente
+            <PinIcon /> Serviço de localização
           </span>
-          <h2 id="cep-title">Encontre qualquer endereço</h2>
-          <p>Consulte dados oficiais de CEP em poucos segundos.</p>
+          <h2 id="cep-title">Consulta de endereços</h2>
+          <p>Consulte informações de endereço a partir de um CEP válido.</p>
         </div>
         <span className="service-status">
           <i /> ViaCEP online
@@ -88,9 +88,9 @@ export function CepSearch() {
 
       <div className="cep-layout">
         <form className="cep-form glass-card" onSubmit={handleSubmit} noValidate>
-          <label htmlFor="cep">Qual CEP você procura?</label>
+          <label htmlFor="cep">Informe o CEP</label>
           <p className="field-hint" id="cep-hint">
-            Digite somente os 8 números ou use o formato 00000-000.
+            Utilize 8 dígitos, com ou sem hífen.
           </p>
           <div className="input-action">
             <SearchIcon />
@@ -136,8 +136,8 @@ export function CepSearch() {
               <div className="map-orbit">
                 <PinIcon />
               </div>
-              <strong>Seu resultado aparece aqui</strong>
-              <span>Faça uma busca para ver rua, bairro, cidade e outros detalhes.</span>
+              <strong>Resultado da consulta</strong>
+              <span>Informe um CEP para visualizar logradouro, bairro, município e UF.</span>
             </div>
           )}
           {!loading && address && (

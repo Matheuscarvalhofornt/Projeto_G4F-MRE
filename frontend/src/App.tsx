@@ -37,22 +37,20 @@ export default function App() {
           </button>
         </nav>
         <span className="environment">
-          <i /> Sistema operacional
+          <i /> Sistema disponível
         </span>
       </header>
 
       <main id="top">
         <section className="hero">
           <div className="hero-copy">
-            <span className="hero-kicker">Informação que aproxima</span>
+            <span className="hero-kicker">Serviços digitais integrados</span>
             <h1>
-              Conexões mais simples.
+              Informação estruturada.
               <br />
-              <em>Decisões mais rápidas.</em>
+              <em>Gestão eficiente.</em>
             </h1>
-            <p>
-              Uma experiência digital segura para consultar endereços e administrar informações.
-            </p>
+            <p>Portal para consulta de endereços e administração de notícias institucionais.</p>
           </div>
           <div className="hero-visual" aria-hidden="true">
             <span className="orb orb-one" />
@@ -61,9 +59,9 @@ export default function App() {
               <GlobeIcon />
             </div>
             <div className="floating-tag tag-one">
-              <i /> API conectada
+              <i /> Integração ativa
             </div>
-            <div className="floating-tag tag-two">Dados em tempo real</div>
+            <div className="floating-tag tag-two">Consulta em tempo real</div>
           </div>
         </section>
 
@@ -99,7 +97,7 @@ export default function App() {
             <small>MRE</small>
           </span>
         </div>
-        <p>Construído com tecnologia, clareza e propósito.</p>
+        <p>Serviços digitais para acesso e gestão da informação.</p>
         <span>© 2026 · Projeto G4F - MRE</span>
       </footer>
     </div>

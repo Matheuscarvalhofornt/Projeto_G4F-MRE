@@ -31,7 +31,7 @@ describe('Feature: busca de endereço por CEP', () => {
     const user = userEvent.setup();
     render(<CepSearch />);
 
-    await user.type(screen.getByLabelText('Qual CEP você procura?'), '01001000');
+    await user.type(screen.getByLabelText('Informe o CEP'), '01001000');
     await user.click(screen.getByRole('button', { name: 'Buscar endereço' }));
 
     expect(await screen.findByText('Praça da Sé')).toBeInTheDocument();
@@ -44,22 +44,20 @@ describe('Feature: busca de endereço por CEP', () => {
     const user = userEvent.setup();
     render(<CepSearch />);
 
-    await user.type(screen.getByLabelText('Qual CEP você procura?'), '99999999');
+    await user.type(screen.getByLabelText('Informe o CEP'), '99999999');
     await user.click(screen.getByRole('button', { name: 'Buscar endereço' }));
 
-    await waitFor(() =>
-      expect(screen.getByRole('alert')).toHaveTextContent('Não encontramos esse CEP'),
-    );
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('CEP não localizado'));
   });
 
   it('Dado um CEP incompleto, quando buscar, então valida sem chamar a API', async () => {
     const user = userEvent.setup();
     render(<CepSearch />);
 
-    await user.type(screen.getByLabelText('Qual CEP você procura?'), '01001');
+    await user.type(screen.getByLabelText('Informe o CEP'), '01001');
     await user.click(screen.getByRole('button', { name: 'Buscar endereço' }));
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Digite um CEP com 8 números.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Informe um CEP válido com 8 dígitos.');
     expect(fetchAddressMock).not.toHaveBeenCalled();
   });
 
@@ -73,7 +71,7 @@ describe('Feature: busca de endereço por CEP', () => {
     const user = userEvent.setup();
     render(<CepSearch />);
 
-    const input = screen.getByLabelText('Qual CEP você procura?');
+    const input = screen.getByLabelText('Informe o CEP');
     await user.type(input, '01001000');
     await user.click(screen.getByRole('button', { name: 'Buscar endereço' }));
     const requestSignal = fetchAddressMock.mock.calls[0]?.[1];
@@ -84,6 +82,6 @@ describe('Feature: busca de endereço por CEP', () => {
 
     await waitFor(() => expect(requestSignal?.aborted).toBe(true));
     expect(screen.queryByText('Praça da Sé')).not.toBeInTheDocument();
-    expect(screen.getByText('Seu resultado aparece aqui')).toBeInTheDocument();
+    expect(screen.getByText('Resultado da consulta')).toBeInTheDocument();
   });
 });

@@ -50,7 +50,7 @@ describe('Feature: consistência da paginação de notícias', () => {
       screen.getByLabelText('Descrição'),
       'Descrição completa da nova notícia publicada.',
     );
-    await user.click(screen.getByRole('button', { name: 'Publicar notícia' }));
+    await user.click(screen.getByRole('button', { name: 'Cadastrar notícia' }));
 
     expect(await screen.findByText('Notícia publicada com sucesso.')).toBeInTheDocument();
     await waitFor(() => {

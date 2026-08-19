@@ -113,10 +113,10 @@ export function NewsManager() {
       <div className="section-heading news-heading">
         <div>
           <span className="eyebrow">
-            <NewsIcon /> Comunicação integrada
+            <NewsIcon /> Comunicação institucional
           </span>
-          <h2 id="news-title">Central de notícias</h2>
-          <p>Crie, encontre e gerencie comunicados em um só lugar.</p>
+          <h2 id="news-title">Gestão de notícias</h2>
+          <p>Cadastre, consulte e mantenha as notícias institucionais.</p>
         </div>
         <button
           className="primary-button"
@@ -212,11 +212,11 @@ export function NewsManager() {
       ) : (
         <div className="empty-state">
           <NewsIcon />
-          <h3>{search ? 'Nenhum resultado encontrado' : 'Sua central está pronta'}</h3>
+          <h3>{search ? 'Nenhum resultado encontrado' : 'Nenhuma notícia cadastrada'}</h3>
           <p>
             {search
-              ? 'Tente buscar com outras palavras.'
-              : 'Publique a primeira notícia para começar.'}
+              ? 'Revise os termos informados e realize uma nova consulta.'
+              : 'Cadastre uma notícia para iniciar a publicação de conteúdo.'}
           </p>
           {!search && (
             <button className="secondary-button" type="button" onClick={() => setFormOpen(true)}>

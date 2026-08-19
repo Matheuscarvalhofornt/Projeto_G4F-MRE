@@ -40,8 +40,8 @@ export function NewsForm({ editing, loading, onCancel, onSave }: NewsFormProps) 
       >
         <div className="modal-heading">
           <div>
-            <span className="eyebrow">{editing ? 'Editar conteúdo' : 'Novo conteúdo'}</span>
-            <h3 id="news-form-title">{editing ? 'Atualizar notícia' : 'Publicar notícia'}</h3>
+            <span className="eyebrow">{editing ? 'Edição de notícia' : 'Cadastro de notícia'}</span>
+            <h3 id="news-form-title">{editing ? 'Atualizar notícia' : 'Cadastrar notícia'}</h3>
           </div>
           <button
             className="icon-button"
@@ -95,7 +95,7 @@ export function NewsForm({ editing, loading, onCancel, onSave }: NewsFormProps) 
               ) : editing ? (
                 'Salvar alterações'
               ) : (
-                'Publicar notícia'
+                'Cadastrar notícia'
               )}
             </button>
           </div>
