@@ -7,6 +7,7 @@ FROM dependencies AS build
 ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL
 COPY frontend/tsconfig*.json frontend/vite.config.ts frontend/eslint.config.js frontend/index.html ./
+COPY frontend/public ./public
 COPY frontend/src ./src
 RUN npm run build
 
