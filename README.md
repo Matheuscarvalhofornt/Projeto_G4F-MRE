@@ -1,5 +1,7 @@
 # Projeto G4F - MRE
 
+[![CI](https://github.com/Matheuscarvalhofornt/Projeto_G4F-MRE/actions/workflows/ci.yml/badge.svg)](https://github.com/Matheuscarvalhofornt/Projeto_G4F-MRE/actions/workflows/ci.yml)
+
 Projeto full stack desenvolvido para a prova técnica da G4F.
 
 A aplicação possui duas funcionalidades principais:
@@ -96,9 +98,19 @@ descricao
 └── docker-compose.yml
 ```
 
-No frontend, as funcionalidades foram organizadas por contexto.
+### Decisões de arquitetura
 
-No backend, a aplicação foi dividida em Controller, Service e Repository para separar as responsabilidades entre requisições HTTP, regras da aplicação e acesso aos dados.
+No frontend, as funcionalidades foram organizadas por contexto. Componentes de interface, regras de cada funcionalidade, clientes HTTP e tipos permanecem separados, reduzindo o acoplamento e facilitando testes e manutenção.
+
+No backend, a aplicação segue a divisão Controller, Service e Repository:
+
+- **Controller:** valida os dados de entrada e traduz as operações para HTTP.
+- **Service:** concentra regras da aplicação, paginação e invalidação do cache.
+- **Repository:** isola o acesso ao banco de dados por meio do Prisma.
+
+Essa separação permite substituir infraestrutura sem alterar as regras centrais. Em um cenário de maior escala, o repositório pode receber outra implementação, o cache em memória pode ser substituído por Redis e a API, por ser stateless, pode ser replicada atrás de um balanceador de carga.
+
+ESLint, Prettier e TypeScript são utilizados para manter consistência, formatação determinística e verificação estática do código.
 
 ## API REST
 
@@ -110,13 +122,13 @@ http://localhost:3333
 
 ### Rotas
 
-| Método | Rota            | Descrição         |
-| ------ | --------------- | ----------------- |
-| POST   | `/noticias`     | Criar notícia     |
-| GET    | `/noticias`     | Listar notícias   |
-| GET    | `/noticias/:id` | Buscar notícia    |
-| PUT    | `/noticias/:id` | Atualizar notícia |
-| DELETE | `/noticias/:id` | Excluir notícia   |
+| Método | Rota            | Sucesso | Descrição         |
+| ------ | --------------- | ------- | ----------------- |
+| POST   | `/noticias`     | `201`   | Criar notícia     |
+| GET    | `/noticias`     | `200`   | Listar notícias   |
+| GET    | `/noticias/:id` | `200`   | Buscar notícia    |
+| PUT    | `/noticias/:id` | `200`   | Atualizar notícia |
+| DELETE | `/noticias/:id` | `204`   | Excluir notícia   |
 
 Exemplo de payload:
 
@@ -127,7 +139,17 @@ Exemplo de payload:
 }
 ```
 
-## Busca e paginação
+### Validação e respostas HTTP
+
+Os payloads são validados com Zod e aceitam somente `titulo` e `descricao`. O título deve conter entre 3 e 160 caracteres, e a descrição entre 10 e 5.000 caracteres.
+
+A API utiliza códigos HTTP semânticos:
+
+- `400` para payload, parâmetros ou JSON inválidos.
+- `404` para notícia ou rota não encontrada.
+- `500` para falhas internas não previstas.
+
+## Filtros e paginação
 
 Exemplo de paginação:
 
@@ -135,11 +157,20 @@ Exemplo de paginação:
 GET /noticias?page=1&limit=6
 ```
 
-Exemplo de busca:
+Busca simultânea em título ou descrição:
 
 ```text
 GET /noticias?search=cooperação
 ```
+
+Filtros por campo:
+
+```text
+GET /noticias?titulo=cooperação
+GET /noticias?descricao=agenda
+```
+
+Os parâmetros podem ser combinados. `page` deve ser maior ou igual a 1, e `limit` aceita valores entre 1 e 100.
 
 A resposta inclui os dados e os metadados da paginação:
 
@@ -154,6 +185,12 @@ A resposta inclui os dados e os metadados da paginação:
   }
 }
 ```
+
+## Cache
+
+A listagem de notícias utiliza cache em memória por combinação de filtros e paginação. O tempo de expiração é configurado por `CACHE_TTL_SECONDS` e possui valor padrão de 30 segundos.
+
+Operações de criação, atualização ou exclusão invalidam o cache para impedir a entrega de dados desatualizados. A implementação segue um contrato próprio, permitindo a substituição futura por Redis ou outro serviço distribuído.
 
 ## Banco de dados
 
@@ -185,6 +222,17 @@ Para encerrar:
 ```bash
 docker compose down
 ```
+
+### Variáveis de ambiente
+
+| Variável            | Padrão               | Finalidade                             |
+| ------------------- | -------------------- | -------------------------------------- |
+| `POSTGRES_DB`       | `mre_news`           | Nome do banco PostgreSQL               |
+| `POSTGRES_USER`     | `mre`                | Usuário do banco                       |
+| `POSTGRES_PASSWORD` | `mre_local_password` | Senha utilizada no ambiente local      |
+| `API_PORT`          | `3333`               | Porta externa da API                   |
+| `WEB_PORT`          | `8080`               | Porta externa do frontend              |
+| `CACHE_TTL_SECONDS` | `30`                 | Expiração do cache da API, em segundos |
 
 ### Execução local
 
@@ -239,6 +287,21 @@ npm run format:check
 ```
 
 Foram criados testes para os principais comportamentos do frontend e backend, incluindo consulta de CEP, validações, cadastro de notícias e paginação.
+
+Os testes seguem a estrutura BDD com cenários descritos em termos de contexto, ação e resultado esperado.
+
+## Atalhos com Makefile
+
+Para ambientes com `make`, estão disponíveis os seguintes comandos:
+
+```bash
+make up      # constrói e inicia os serviços
+make down    # encerra os serviços
+make logs    # acompanha os logs
+make test    # instala dependências e executa os testes
+make lint    # executa a análise estática
+make build   # constrói as imagens Docker
+```
 
 ## GitFlow
 
