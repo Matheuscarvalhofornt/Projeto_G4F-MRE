@@ -321,6 +321,7 @@ A branch `main` representa a versão estável e a `develop` concentra as funcion
 
 O GitHub Actions executa automaticamente nos Pull Requests para `develop` e `main`:
 
+- Verificação de formatação com Prettier.
 - Lint.
 - Testes.
 - Build.
