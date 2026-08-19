@@ -7,6 +7,7 @@ import {
   SearchIcon,
   TrashIcon,
 } from '../../components/Icons';
+import { keepFocusInsideDialog } from '../../components/modal-accessibility';
 import { createNews, deleteNews, listNews, updateNews } from '../../services/news-api';
 import type { News, NewsInput, NewsPage } from '../../types/news';
 import { NewsForm } from './NewsForm';
@@ -268,6 +269,14 @@ export function NewsManager() {
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="delete-title"
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                setDeleting(null);
+                return;
+              }
+              keepFocusInsideDialog(event);
+            }}
           >
             <div className="danger-mark">
               <TrashIcon />
@@ -275,7 +284,12 @@ export function NewsManager() {
             <h3 id="delete-title">Excluir esta notícia?</h3>
             <p>“{deleting.titulo}” será removida permanentemente.</p>
             <div className="modal-actions">
-              <button className="secondary-button" type="button" onClick={() => setDeleting(null)}>
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={() => setDeleting(null)}
+                autoFocus
+              >
                 Cancelar
               </button>
               <button

@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { CloseIcon } from '../../components/Icons';
+import { keepFocusInsideDialog } from '../../components/modal-accessibility';
 import type { News, NewsInput } from '../../types/news';
 
 interface NewsFormProps {
@@ -37,6 +38,14 @@ export function NewsForm({ editing, loading, onCancel, onSave }: NewsFormProps) 
         role="dialog"
         aria-modal="true"
         aria-labelledby="news-form-title"
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            onCancel();
+            return;
+          }
+          keepFocusInsideDialog(event);
+        }}
       >
         <div className="modal-heading">
           <div>

@@ -73,4 +73,33 @@ describe('Feature: consistência da paginação de notícias', () => {
     expect(await screen.findByText('Notícia excluída com sucesso.')).toBeInTheDocument();
     await waitFor(() => expect(listNewsMock.mock.calls.at(-1)?.[0]).toBe(1));
   });
+
+  it('Dado um formulário aberto, quando pressionar Escape, então fecha o modal', async () => {
+    const user = userEvent.setup();
+    render(<NewsManager />);
+
+    await screen.findByText('Página um');
+    await user.click(screen.getByRole('button', { name: 'Nova notícia' }));
+    expect(screen.getByRole('dialog', { name: 'Cadastrar notícia' })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog', { name: 'Cadastrar notícia' })).not.toBeInTheDocument();
+  });
+
+  it('Dada uma confirmação de exclusão aberta, quando pressionar Escape, então cancela a ação', async () => {
+    const user = userEvent.setup();
+    render(<NewsManager />);
+
+    await screen.findByText('Página um');
+    await user.click(screen.getByRole('button', { name: 'Excluir Página um' }));
+    expect(screen.getByRole('alertdialog', { name: 'Excluir esta notícia?' })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+
+    expect(
+      screen.queryByRole('alertdialog', { name: 'Excluir esta notícia?' }),
+    ).not.toBeInTheDocument();
+    expect(deleteNewsMock).not.toHaveBeenCalled();
+  });
 });
